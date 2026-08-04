@@ -4,10 +4,12 @@ dotenv.config();
 import app from "./app";
 import { logger } from "./logger";
 import { redisService } from "./redis/redis.service";
+import { connectKafka } from "./kafka/kafka.service";
 const PORT = config.PORT;
 async function start(){
     try{
         await redisService.connect();
+        await connectKafka();
         app.listen(PORT, ()=>{
         logger.info(`Gateway running on port ${PORT}`);
     });

@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 // import { rateLimiterService } from ";
 import {rateLimiterService} from "../services/index";
+import { rateLimitedRequests } from "../../metrics/metrics";
 export async function rateLimiter(
     req: Request,
     res: Response,
@@ -8,13 +9,14 @@ export async function rateLimiter(
 ) {
     try {
         const clientIp =
-            req.ip ||
-            req.socket.remoteAddress ||
+            req.ip??
+            req.socket.remoteAddress??
             "unknown";
-
+        console.log(`Client IP: ${clientIp}`);
         const key = `rate-limit:${clientIp}`;
         const result =
             await rateLimiterService.allow(key);
+        console.log(`Rate limit result for ${key}:`, result);
         res.setHeader(
             "X-RateLimit-Limit",
             "100"
@@ -26,7 +28,7 @@ export async function rateLimiter(
         );
 
         if (!result.allowed) {
-
+            rateLimitedRequests.inc();
             res.setHeader(
                 "Retry-After",
                 result.retryAfter

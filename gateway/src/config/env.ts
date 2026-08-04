@@ -11,6 +11,7 @@ const envSchema = z.object({
     KAFKA_BROKERS: z.string(),
     JWT_SECRET: z.string().min(32,"JWT_SECRET should be at least 32 characters"),
     JWT_EXPIRES_IN: z.string(),
+    JWT_ISSUER: z.string(),
     REFRESH_TOKEN_EXPIRES_IN: z.string(),
 });
 const parsed = envSchema.safeParse(process.env);
