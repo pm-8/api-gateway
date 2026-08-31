@@ -2,6 +2,7 @@ import { Request, Response, NextFunction } from "express";
 // import { rateLimiterService } from ";
 import {rateLimiterService} from "../services/index";
 import { rateLimitedRequests } from "../../metrics/metrics";
+import { RATE_LIMIT } from "../config";
 export async function rateLimiter(
     req: Request,
     res: Response,
@@ -19,7 +20,7 @@ export async function rateLimiter(
         console.log(`Rate limit result for ${key}:`, result);
         res.setHeader(
             "X-RateLimit-Limit",
-            "100"
+            RATE_LIMIT.capacity.toString()
         );
 
         res.setHeader(
