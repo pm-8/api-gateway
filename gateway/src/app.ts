@@ -2,7 +2,6 @@ import express from "express";
 import morgan from "morgan";
 import cors from "cors";
 import helmet from "helmet";
-// import {productProxy, userProxy} from "./proxy/proxy";
 import { services } from "./config/service";
 import { createServiceProxy } from "./proxy/createProxy";
 import { requestIdMiddleware } from "./middleware/requestId";
@@ -27,10 +26,6 @@ app.use(morgan("dev"));
 app.use(rateLimiter);
 
 services.forEach((service)=>{
-    if(service.route == '/health'){
-        app.use(service.route,authenticate,authorize("ADMIN"),createServiceProxy(service.target))
-    }
-    else
     app.use(service.route,authenticate,createServiceProxy(service.target));
 })
 app.get("/",(req,res)=>{
